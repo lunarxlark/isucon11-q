@@ -1160,6 +1160,25 @@ func getTrend(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
+func bundleStrings(originStrArr []IsuCondition, bundleUnit int) [][]IsuCondition {
+	bundledStrArr := [][]IsuCondition{}
+	if bundleUnit == 0 {
+		return bundledStrArr
+	}
+	var strArr []IsuCondition = nil
+	for i, str := range originStrArr {
+		if strArr == nil {
+			strArr = []IsuCondition{}
+		}
+		strArr = append(strArr, str)
+		if len(strArr) == bundleUnit || i == len(originStrArr)-1 {
+			bundledStrArr = append(bundledStrArr, strArr)
+			strArr = nil
+		}
+	}
+	return bundledStrArr
+}
+
 // POST /api/condition/:jia_isu_uuid
 // ISUからのコンディションを受け取る
 func postIsuCondition(c echo.Context) error {
@@ -1226,14 +1245,17 @@ func postIsuCondition(c echo.Context) error {
 		// 	return c.NoContent(http.StatusInternalServerError)
 		// }
 	}
-	_, err = tx.NamedExec(
-		"INSERT INTO `isu_condition`"+
-			"	(`jia_isu_uuid`, `timestamp`, `is_sitting`, `condition`, `message`)"+
-			"	VALUES (:jia_isu_uuid,:timestamp,:is_sitting,:condition,:message)",
-		isuConditions)
-	if err != nil {
-		c.Logger().Errorf("db error: %v", err)
-		return c.NoContent(http.StatusInternalServerError)
+	bundles := bundleStrings(isuConditions, 1000)
+	for _, bundle := range bundles {
+		_, err = tx.NamedExec(
+			"INSERT INTO `isu_condition`"+
+				"	(`jia_isu_uuid`, `timestamp`, `is_sitting`, `condition`, `message`)"+
+				"	VALUES (:jia_isu_uuid,:timestamp,:is_sitting,:condition,:message)",
+			bundle)
+		if err != nil {
+			c.Logger().Errorf("db error: %v", err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
 	}
 
 	err = tx.Commit()
