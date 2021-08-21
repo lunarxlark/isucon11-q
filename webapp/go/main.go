@@ -687,6 +687,9 @@ func getIsuID(c echo.Context) error {
 
 // GET /api/isu/:jia_isu_uuid/icon
 // ISUのアイコンを取得
+
+var iconCache map[string][]byte
+
 func getIsuIcon(c echo.Context) error {
 	jiaUserID, errStatusCode, err := getUserIDFromSession(c)
 	if err != nil {
@@ -700,6 +703,10 @@ func getIsuIcon(c echo.Context) error {
 
 	jiaIsuUUID := c.Param("jia_isu_uuid")
 
+	if val, ok := iconCache[jiaIsuUUID]; ok {
+		return c.Blob(http.StatusOK, "", val)
+	}
+
 	var image []byte
 	err = db.Get(&image, "SELECT `image` FROM `isu` WHERE `jia_user_id` = ? AND `jia_isu_uuid` = ?",
 		jiaUserID, jiaIsuUUID)
@@ -711,6 +718,8 @@ func getIsuIcon(c echo.Context) error {
 		c.Logger().Errorf("db error: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+
+	iconCache[jiaIsuUUID] = image
 
 	return c.Blob(http.StatusOK, "", image)
 }
