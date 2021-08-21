@@ -24,15 +24,16 @@ sudo cp ${DIR}/nginx.conf /etc/nginx/nginx.conf
 
 echo "### Deploy mysqld.conf ###"
 #sudo cp ${DIR}/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo cp ${DIR}/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 echo "### Reload & restarting systemd ###"
 sudo systemctl daemon-reload
 sudo systemctl restart nginx.service
-#sudo systemctl restart mysql.service
+sudo systemctl restart mysql.service
 
 echo "### Rotate log ###"
 COMMIT=$(git rev-parse HEAD)
 sudo cp /var/log/nginx/access.log /var/log/nginx/access.log.$(date +%s).${COMMIT:0:6}
 echo '' | sudo tee /var/log/nginx/access.log
-#sudo cp /var/log/mysql/mysql-slow.log /var/log/mysql/mysql-slow.log.$(date +%s).${COMMIT:0:6}
-#echo '' | sudo tee /var/log/mysql/mysql-slow.log
+sudo cp /var/log/mysql/slow.log /var/log/mysql/slow.log.$(date +%s).${COMMIT:0:6}
+echo '' | sudo tee /var/log/mysql/slow.log
