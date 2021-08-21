@@ -15,6 +15,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -439,6 +440,18 @@ func getMe(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
+type IsuListCache struct {
+	IsuList        []GetIsuListResponse
+	CacheCreatedAt time.Time
+	Mutex          sync.RWMutex
+}
+
+func (c *IsuListCache) IsExpired() bool {
+	return time.Since(c.CacheCreatedAt) < 800*time.Millisecond
+}
+
+var ic = IsuListCache{}
+
 // GET /api/isu
 // ISUの一覧を取得
 func getIsuList(c echo.Context) error {
@@ -467,6 +480,10 @@ func getIsuList(c echo.Context) error {
 	if err != nil {
 		c.Logger().Errorf("db error: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	if !ic.IsExpired() {
+		return c.JSON(http.StatusOK, ic.IsuList)
 	}
 
 	responseList := []GetIsuListResponse{}
@@ -510,6 +527,11 @@ func getIsuList(c echo.Context) error {
 			Character:          isu.Character,
 			LatestIsuCondition: formattedCondition}
 		responseList = append(responseList, res)
+	}
+
+	if ic.IsExpired() {
+		ic.IsuList = responseList
+		ic.CacheCreatedAt = time.Now()
 	}
 
 	err = tx.Commit()
