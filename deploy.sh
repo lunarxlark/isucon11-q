@@ -2,6 +2,7 @@
 
 DIR=$(cd $(dirname $0); pwd)
 
+cp env.sh /home/isucon/env.sh
 echo "### Stop webapp ###"
 sudo systemctl stop isucondition.go.service
 
@@ -13,7 +14,6 @@ fi
 
 /home/isucon/local/go/bin/go build -o isucondition
 cp -f isucondition /home/isucon/webapp/go/
-cp -f env.sh /home/isucon/env.sh
 
 echo "### Start webapp ###"
 sudo systemctl daemon-reload
