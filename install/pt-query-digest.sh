@@ -3,4 +3,5 @@
 sudo apt-get install -y percona-toolkit
 
 # How to useage
-# $ sudo pt-query-digest /var/log/mysql/mysql-slow.log > /tmp/slow.txt
+# $ sudo pt-query-digest /var/log/mysql/slow.log > /home/isucon/isucon11-q/slow.txt
+# $ chown isucon:isucon slow.txt
