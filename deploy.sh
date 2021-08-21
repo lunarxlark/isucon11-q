@@ -2,7 +2,7 @@
 
 DIR=$(cd $(dirname $0); pwd)
 
-cp env.sh /home/isucon/env.sh
+cp -f env.sh /home/isucon/env.sh
 echo "### Stop webapp ###"
 sudo systemctl stop isucondition.go.service
 
