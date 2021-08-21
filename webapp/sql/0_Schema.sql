@@ -15,6 +15,8 @@ CREATE TABLE `isu` (
    PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
 
+CREATE INDEX index_isu_uuid ON isu (jia_isu_uuid);
+
 CREATE TABLE `isu_condition` (
   `id` bigint AUTO_INCREMENT,
   `jia_isu_uuid` CHAR(36) NOT NULL,
