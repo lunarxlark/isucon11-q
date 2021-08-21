@@ -467,7 +467,7 @@ func getIsuList(c echo.Context) error {
 	isuAndIsuConditionLists := []IsuAndIsuCondition{}
 	err = tx.Select(
 		&isuAndIsuConditionLists,
-		"SELECT i.*,is.* FROM `isu` as i WHERE `i.jia_user_id` = ? join `isu_condition` as is on i.jia_isu_uuid = is.jia_isu_uuid",
+		"SELECT i.*, ic.* FROM `isu` as i WHERE `i.jia_user_id` = ? join `isu_condition` as ic on i.jia_isu_uuid = ic.jia_isu_uuid",
 		jiaUserID)
 	if err != nil {
 		c.Logger().Errorf("db error: %v", err)
