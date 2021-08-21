@@ -567,10 +567,6 @@ func postIsu(c echo.Context) error {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
-		if err := ioutil.WriteFile("../"+jiaIsuUUID+".jpg", image, 0644); err != nil {
-			c.Logger().Error(err)
-			return c.NoContent(http.StatusInternalServerError)
-		}
 	}
 
 	tx, err := db.Beginx()
@@ -581,9 +577,8 @@ func postIsu(c echo.Context) error {
 	defer tx.Rollback()
 
 	_, err = tx.Exec("INSERT INTO `isu`"+
-		//"	(`jia_isu_uuid`, `name`, `image`, `jia_user_id`) VALUES (?, ?, ?, ?)",
-		"	(`jia_isu_uuid`, `name`, `jia_user_id`) VALUES (?, ?, ?)",
-		jiaIsuUUID, isuName, jiaUserID)
+		"	(`jia_isu_uuid`, `name`, `image`, `jia_user_id`) VALUES (?, ?, ?, ?)",
+		jiaIsuUUID, isuName, image, jiaUserID)
 	if err != nil {
 		mysqlErr, ok := err.(*mysql.MySQLError)
 
@@ -712,20 +707,15 @@ func getIsuIcon(c echo.Context) error {
 		return c.Blob(http.StatusOK, "", val)
 	}
 
-	//var image []byte
-	//err = db.Get(&image, "SELECT `image` FROM `isu` WHERE `jia_user_id` = ? AND `jia_isu_uuid` = ?",
-	//	jiaUserID, jiaIsuUUID)
-	//if err != nil {
-	//	if errors.Is(err, sql.ErrNoRows) {
-	//		return c.String(http.StatusNotFound, "not found: isu")
-	//	}
-
-	//	c.Logger().Errorf("db error: %v", err)
-	//	return c.NoContent(http.StatusInternalServerError)
-	//}
-	image, err := ioutil.ReadFile("../" + jiaIsuUUID + ".jpg")
+	var image []byte
+	err = db.Get(&image, "SELECT `image` FROM `isu` WHERE `jia_user_id` = ? AND `jia_isu_uuid` = ?",
+		jiaUserID, jiaIsuUUID)
 	if err != nil {
-		c.Logger().Error(err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return c.String(http.StatusNotFound, "not found: isu")
+		}
+
+		c.Logger().Errorf("db error: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
