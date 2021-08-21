@@ -688,7 +688,7 @@ func getIsuID(c echo.Context) error {
 // GET /api/isu/:jia_isu_uuid/icon
 // ISUのアイコンを取得
 
-var iconCache map[string][]byte
+var iconCache map[string][]byte = make(map[string][]byte)
 
 func getIsuIcon(c echo.Context) error {
 	jiaUserID, errStatusCode, err := getUserIDFromSession(c)
