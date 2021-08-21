@@ -24,7 +24,7 @@ sudo cp ${DIR}/nginx.conf /etc/nginx/nginx.conf
 echo "### Deploy mysqld.conf ###"
 #sudo cp ${DIR}/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo cp ${DIR}/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-sudo cp -pr ${DIR}/webapp/sql/* /home/isucon/webapp/sql/*
+sudo cp -pr ${DIR}/webapp/sql /home/isucon/webapp/sql
 
 echo "### Reload & restarting systemd ###"
 sudo systemctl daemon-reload
