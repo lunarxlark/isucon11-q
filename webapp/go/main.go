@@ -58,14 +58,14 @@ type Config struct {
 }
 
 type Isu struct {
-	ID         int    `db:"id" json:"id"`
-	JIAIsuUUID string `db:"jia_isu_uuid" json:"jia_isu_uuid"`
-	Name       string `db:"name" json:"name"`
-	//Image      []byte    `db:"image" json:"-"`
-	Character string    `db:"character" json:"character"`
-	JIAUserID string    `db:"jia_user_id" json:"-"`
-	CreatedAt time.Time `db:"created_at" json:"-"`
-	UpdatedAt time.Time `db:"updated_at" json:"-"`
+	ID         int       `db:"id" json:"id"`
+	JIAIsuUUID string    `db:"jia_isu_uuid" json:"jia_isu_uuid"`
+	Name       string    `db:"name" json:"name"`
+	Image      []byte    `db:"image" json:"-"`
+	Character  string    `db:"character" json:"character"`
+	JIAUserID  string    `db:"jia_user_id" json:"-"`
+	CreatedAt  time.Time `db:"created_at" json:"-"`
+	UpdatedAt  time.Time `db:"updated_at" json:"-"`
 }
 
 type IsuFromJIA struct {
@@ -567,7 +567,7 @@ func postIsu(c echo.Context) error {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
-		if err := ioutil.WriteFile("../"+jiaIsuUUID, image, 0644); err != nil {
+		if err := ioutil.WriteFile("../"+jiaIsuUUID+".jpg", image, 0644); err != nil {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
@@ -723,7 +723,7 @@ func getIsuIcon(c echo.Context) error {
 	//	c.Logger().Errorf("db error: %v", err)
 	//	return c.NoContent(http.StatusInternalServerError)
 	//}
-	image, err := ioutil.ReadFile("../" + jiaIsuUUID)
+	image, err := ioutil.ReadFile("../" + jiaIsuUUID + ".jpg")
 	if err != nil {
 		c.Logger().Error(err)
 		return c.NoContent(http.StatusInternalServerError)
