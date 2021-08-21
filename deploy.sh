@@ -15,6 +15,8 @@ fi
 /home/isucon/local/go/bin/go build -o isucondition
 cp -f isucondition /home/isucon/webapp/go/
 
+cp -rf script/images /home/isucon/webapp/
+
 echo "### Start webapp ###"
 sudo systemctl daemon-reload
 sudo systemctl start isucondition.go.service
