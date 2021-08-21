@@ -14,7 +14,7 @@ CREATE TABLE `isu` (
   `updated_at` DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
    PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
-
+CREATE INDEX index_jia_isu_uuid_userid_userid ON isu_condition (jia_isu_uuid,jia_user_id);
 CREATE INDEX index_isu_uuid ON isu (jia_isu_uuid);
 
 CREATE TABLE `isu_condition` (
@@ -29,7 +29,6 @@ CREATE TABLE `isu_condition` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
 
 CREATE INDEX index_jia_isu_uuid ON isu_condition (jia_isu_uuid);
-CREATE INDEX index_timestamp ON isu_condition (timestamp);
 
 CREATE TABLE `user` (
   `jia_user_id` VARCHAR(255) PRIMARY KEY,
