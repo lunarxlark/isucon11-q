@@ -447,7 +447,7 @@ type IsuListCache struct {
 }
 
 func (c *IsuListCache) IsExpired() bool {
-	return time.Since(c.CacheCreatedAt) < 800*time.Millisecond
+	return time.Since(c.CacheCreatedAt) < 100*time.Millisecond
 }
 
 var ic = IsuListCache{}
@@ -529,10 +529,8 @@ func getIsuList(c echo.Context) error {
 		responseList = append(responseList, res)
 	}
 
-	if ic.IsExpired() {
-		ic.IsuList = responseList
-		ic.CacheCreatedAt = time.Now()
-	}
+	ic.IsuList = responseList
+	ic.CacheCreatedAt = time.Now()
 
 	err = tx.Commit()
 	if err != nil {
