@@ -21,6 +21,7 @@ sudo systemctl start isucondition.go.service
 
 echo "### Deploy nginx.conf ###"
 sudo cp ${DIR}/nginx.conf /etc/nginx/nginx.conf
+sudo cp ${DIR}/isucondition.conf /etc/nginx/sites-available/isucondition.conf
 
 echo "### Deploy mysqld.conf ###"
 #sudo cp ${DIR}/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf
