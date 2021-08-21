@@ -703,7 +703,7 @@ func getIsuIcon(c echo.Context) error {
 
 	jiaIsuUUID := c.Param("jia_isu_uuid")
 
-	if val, ok := iconCache[jiaIsuUUID]; ok {
+	if val, ok := iconCache[jiaUserID+jiaIsuUUID]; ok {
 		return c.Blob(http.StatusOK, "", val)
 	}
 
@@ -719,7 +719,7 @@ func getIsuIcon(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	iconCache[jiaIsuUUID] = image
+	iconCache[jiaUserID+jiaIsuUUID] = image
 
 	return c.Blob(http.StatusOK, "", image)
 }
