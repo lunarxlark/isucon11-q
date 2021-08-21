@@ -482,7 +482,7 @@ func getIsuList(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if !ic.IsExpired() {
+	if len(ic.IsuList) > 0 && !ic.IsExpired() {
 		return c.JSON(http.StatusOK, ic.IsuList)
 	}
 
