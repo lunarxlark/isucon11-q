@@ -562,11 +562,11 @@ func postIsu(c echo.Context) error {
 		}
 		defer file.Close()
 
-		image, err = ioutil.ReadAll(file)
-		if err != nil {
-			c.Logger().Error(err)
-			return c.NoContent(http.StatusInternalServerError)
-		}
+		//image, err = ioutil.ReadAll(file)
+		//if err != nil {
+		//	c.Logger().Error(err)
+		//	return c.NoContent(http.StatusInternalServerError)
+		//}
 		if err := ioutil.WriteFile("../"+jiaIsuUUID+".jpg", image, 0644); err != nil {
 			c.Logger().Error(err)
 			return c.NoContent(http.StatusInternalServerError)
