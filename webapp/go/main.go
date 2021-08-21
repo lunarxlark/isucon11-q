@@ -1076,12 +1076,17 @@ func calculateConditionLevel(condition string) (string, error) {
 
 // GET /api/trend
 // ISUの性格毎の最新のコンディション情報
+
+var characterList = []Isu{}
+
 func getTrend(c echo.Context) error {
-	characterList := []Isu{}
-	err := db.Select(&characterList, "SELECT `character` FROM `isu` GROUP BY `character`")
-	if err != nil {
-		c.Logger().Errorf("db error: %v", err)
-		return c.NoContent(http.StatusInternalServerError)
+	var err error
+	if len(characterList) <= 0 {
+		err = db.Select(&characterList, "SELECT `character` FROM `isu` GROUP BY `character`")
+		if err != nil {
+			c.Logger().Errorf("db error: %v", err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
 	}
 
 	res := []TrendResponse{}
